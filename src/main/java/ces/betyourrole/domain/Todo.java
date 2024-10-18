@@ -1,5 +1,6 @@
 package ces.betyourrole.domain;
 
+import ces.betyourrole.exception.RequiredFieldMissingException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,21 +25,23 @@ public class Todo {
     @JoinColumn(name = "winner")
     private Participant winner; // 낙찰자
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "todo_name")
     private String name;
 
+    @Column(name = "todo_inscription")
     private String inscription;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime createDate;
 
-
-    // 생성자
-    public Todo(TodoRoom room, String name, String inscription, Participant winner) {
+    public Todo(TodoRoom room, String name, String inscription) {
         this.room = room;
+        if(name==null || name.isEmpty()){
+            throw new RequiredFieldMissingException("역할의 이름은 필수 입력입니다.");
+        }
         this.name = name;
         this.inscription = inscription;
-        this.winner = winner;
         this.createDate = LocalDateTime.now();
     }
+
 }

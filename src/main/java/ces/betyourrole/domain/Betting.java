@@ -22,23 +22,16 @@ public class Betting {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
-    private Todo todo; // 연관된 Todo
+    private Todo todo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id", nullable = false)
-    private Participant participant; // 연관된 Participant
+    private Participant participant;
 
     @Column(nullable = false)
-    private Integer point = 0; // 배팅 금액 (기본값 0)
+    private Integer point = 0;
 
     @Column
-    private String comment; // 배팅에 대한 코멘트
+    private String comment;
 
-    // 생성자
-    public Betting(Todo todo, Participant participant, Integer point, String comment) {
-        this.todo = todo;
-        this.participant = participant;
-        this.point = point;
-        this.comment = comment;
-    }
 }

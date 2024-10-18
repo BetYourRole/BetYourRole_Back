@@ -24,7 +24,7 @@ public class Participant {
     @JoinColumn(name = "room_id", nullable = false)
     private TodoRoom room; // 참가자가 속한 방
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "participant_name")
     private String name; // 참가자명
 
     @Column(nullable = false, updatable = false)
@@ -36,13 +36,4 @@ public class Participant {
     @Column
     private String password; // 수정 비밀번호 (비회원 전용)
 
-    // 생성자
-    public Participant(Member activeSession, TodoRoom room, String name, String password) {
-        this.activeSession = activeSession;
-        this.room = room;
-        this.name = name;
-        this.password = password;
-        this.createDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
-    }
 }
