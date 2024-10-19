@@ -5,6 +5,7 @@ import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
 import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.exception.InvalidRangeException;
+import ces.betyourrole.exception.IdNotFoundException;
 import ces.betyourrole.repository.TodoRepository;
 import ces.betyourrole.repository.TodoRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ public class TodoRoomService {
 
     private final TodoRoomRepository todoRoomRepository;
     private final TodoRepository todoRepository;
+    private final ParticipantQueryService participantQueryService;
 
     @Transactional
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
@@ -39,6 +40,14 @@ public class TodoRoomService {
 
         todoRepository.saveAll(todos);
 
-        return new TodoRoomResponse(room);
+        return new TodoRoomResponse(room, 0);
+    }
+
+    public TodoRoom findById(Long id){
+        return todoRoomRepository.findById(id).orElseThrow(IdNotFoundException::new);
+    }
+
+    public Todo getTodo(Long id){
+        return todoRepository.getReferenceById(id);
     }
 }

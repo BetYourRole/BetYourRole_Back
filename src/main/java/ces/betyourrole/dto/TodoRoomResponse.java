@@ -4,12 +4,13 @@ import ces.betyourrole.domain.MatchingState;
 import ces.betyourrole.domain.MatchingType;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.repository.TodoRoomRepository;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class TodoRoomResponse {
 
@@ -25,6 +26,8 @@ public class TodoRoomResponse {
 
     private Integer headCount;
 
+    private Integer participantCount;
+
     private MatchingType matchingType;
 
     private Integer point;
@@ -33,11 +36,12 @@ public class TodoRoomResponse {
 
     private boolean visibility;
 
-    public TodoRoomResponse(TodoRoom room){
+    public TodoRoomResponse(TodoRoom room, Integer participantCount){
         this.id = room.getId();
         this.name = room.getName();
         this.inscription = room.getInscription();
         this.headCount = room.getHeadCount();;
+        this.participantCount = participantCount;
         this.matchingType = room.getMatchingType();
         this.point = room.getPoint();
         this.state = room.getState();

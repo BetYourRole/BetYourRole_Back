@@ -6,13 +6,14 @@ import ces.betyourrole.domain.Member;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.exception.InvalidRangeException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class CreateTodoRoomRequest {
 
@@ -38,6 +39,5 @@ public class CreateTodoRoomRequest {
 
     public TodoRoom toEntity(){
         return new TodoRoom(this.password, this.name, this.inscription, this.headCount, this.matchingType, this.point, this.visibility);
-
     }
 }

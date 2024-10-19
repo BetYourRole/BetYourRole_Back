@@ -36,4 +36,21 @@ public class Participant {
     @Column
     private String password; // 수정 비밀번호 (비회원 전용)
 
+    private Participant(TodoRoom room, String name) {
+        this.room = room;
+        this.name = name;
+        this.createDate = this.updateDate = LocalDateTime.now();
+    }
+
+    public Participant(Member member, TodoRoom room, String name){
+        this(room, name);
+        activeSession = member;
+    }
+
+    public Participant(String password, TodoRoom room, String name){
+        this(room, name);
+
+        //비밀번호 암호화 로직 추가
+        this.password = password;
+    }
 }

@@ -34,4 +34,10 @@ public class Betting {
     @Column
     private String comment;
 
+    public Betting(Todo todo, Participant participant, Integer point, String comment) {
+        this.todo = todo;
+        this.participant = participant;
+        this.point = point;
+        this.comment = comment;
+    }
 }
