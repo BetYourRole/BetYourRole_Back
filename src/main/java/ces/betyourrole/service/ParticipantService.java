@@ -4,7 +4,7 @@ import ces.betyourrole.domain.Betting;
 import ces.betyourrole.domain.Participant;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.AddParticipantRequest;
-import ces.betyourrole.dto.BettingDTO;
+import ces.betyourrole.dto.BettingRequest;
 import ces.betyourrole.dto.ParticipantResponse;
 import ces.betyourrole.exception.IdNotFoundException;
 import ces.betyourrole.exception.InvalidRangeException;
@@ -41,7 +41,7 @@ public class ParticipantService {
         p = request.toEntity(room);
         participantRepository.save(p);
 
-        if(request.getBettings().stream().mapToInt(BettingDTO::getPoint).sum() > room.getPoint()){
+        if(request.getBettings().stream().mapToInt(BettingRequest::getPoint).sum() > room.getPoint()){
             throw new InvalidRangeException("합계 포인트가 최대 포인트를 초과합니다.");
         }
 
@@ -53,7 +53,7 @@ public class ParticipantService {
             throw new IdNotFoundException("올바르지 않은 역할 정보가 포함되어 있습니다.");
         }
 
-        return new ParticipantResponse(p);
+        return new ParticipantResponse(p, bettings);
 
     }
 

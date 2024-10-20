@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BettingDTO {
+public class BettingRequest {
 
     private Long todoId;
     private Long participantId;
@@ -20,11 +20,6 @@ public class BettingDTO {
         return new Betting(todo, p, this.point, this.comment);
     }
 
-    public BettingDTO(Betting betting){
-        this.todoId = betting.getTodo().getId();
-        this.participantId = betting.getParticipant().getId();
-        this.point = betting.getPoint();
-        this.comment = betting.getComment();
-    }
+
 
 }

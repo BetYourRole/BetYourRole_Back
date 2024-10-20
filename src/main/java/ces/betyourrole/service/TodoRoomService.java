@@ -40,7 +40,7 @@ public class TodoRoomService {
 
         todoRepository.saveAll(todos);
 
-        return new TodoRoomResponse(room, 0);
+        return new TodoRoomResponse(room, todos,0);
     }
 
     public TodoRoom findById(Long id){

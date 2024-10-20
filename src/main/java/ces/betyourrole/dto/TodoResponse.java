@@ -1,25 +1,20 @@
 package ces.betyourrole.dto;
 
 import ces.betyourrole.domain.Todo;
-import ces.betyourrole.domain.TodoRoom;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TodoDTO {
-
+public class TodoResponse {
+    private Long id;
     private String name;
     private String inscription;
 
-    public Todo toEntity(TodoRoom room){
-        return new Todo(room, this.name, this.inscription);
-    }
-
-    public TodoDTO(Todo todo){
+    public TodoResponse(Todo todo){
+        this.id = todo.getId();
         this.name = todo.getName();
         this.inscription = todo.getInscription();
     }
-
 }

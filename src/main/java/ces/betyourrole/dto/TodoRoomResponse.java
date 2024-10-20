@@ -2,6 +2,7 @@ package ces.betyourrole.dto;
 
 import ces.betyourrole.domain.MatchingState;
 import ces.betyourrole.domain.MatchingType;
+import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.repository.TodoRoomRepository;
 import lombok.AccessLevel;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -36,7 +38,10 @@ public class TodoRoomResponse {
 
     private boolean visibility;
 
-    public TodoRoomResponse(TodoRoom room, Integer participantCount){
+    private List<TodoResponse> todos;
+
+
+    public TodoRoomResponse(TodoRoom room, List<Todo> todos, Integer participantCount){
         this.id = room.getId();
         this.name = room.getName();
         this.inscription = room.getInscription();
@@ -46,5 +51,6 @@ public class TodoRoomResponse {
         this.point = room.getPoint();
         this.state = room.getState();
         this.visibility = room.getVisibility();
+        this.todos = todos.stream().map(TodoResponse::new).toList();
     }
 }
