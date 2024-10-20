@@ -43,8 +43,18 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todos,0);
     }
 
+    public TodoRoomResponse getRoomData(Long id){
+        TodoRoom room = findById(id);
+        List<Todo> todos = findTodosByRoom(room);
+        return new TodoRoomResponse(room, todos, todos.size());
+    }
+
     public TodoRoom findById(Long id){
         return todoRoomRepository.findById(id).orElseThrow(IdNotFoundException::new);
+    }
+
+    public List<Todo> findTodosByRoom(TodoRoom room){
+        return todoRepository.findByRoom(room);
     }
 
     public Todo getTodo(Long id){
