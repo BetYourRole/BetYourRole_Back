@@ -45,8 +45,7 @@ public class TodoRoomService {
 
     public TodoRoomResponse getRoomData(Long id){
         TodoRoom room = findById(id);
-        List<Todo> todos = findTodosByRoom(room);
-        return new TodoRoomResponse(room, todos, todos.size());
+        return new TodoRoomResponse(room, findTodosByRoom(room), participantQueryService.countParticipantsByRoom(room));
     }
 
     public TodoRoom findById(Long id){
