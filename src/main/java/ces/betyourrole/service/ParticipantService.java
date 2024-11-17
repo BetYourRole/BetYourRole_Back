@@ -19,13 +19,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ParticipantService {
 
     private final TodoRoomService todoRoomService;
     private final ParticipantRepository participantRepository;
     private final BettingRepository bettingRepository;
 
+    @Transactional
     public ParticipantResponse addParticipant(String token, AddParticipantRequest request){
 
         /**

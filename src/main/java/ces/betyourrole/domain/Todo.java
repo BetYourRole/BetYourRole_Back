@@ -4,6 +4,7 @@ import ces.betyourrole.exception.RequiredFieldMissingException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class Todo {
     @JoinColumn(name = "room_id", nullable = false)
     private TodoRoom room;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winner")
     private Participant winner; // 낙찰자

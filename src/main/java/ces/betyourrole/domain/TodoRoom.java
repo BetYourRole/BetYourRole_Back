@@ -1,5 +1,6 @@
 package ces.betyourrole.domain;
 
+import ces.betyourrole.exception.InvalidCapacityException;
 import ces.betyourrole.exception.InvalidRangeException;
 import ces.betyourrole.exception.RequiredFieldMissingException;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Fetch;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -94,4 +96,17 @@ public class TodoRoom {
         this.password = password;
     }
 
+    public boolean isPasswordCorrect(String input){
+        //암호화 로직 적용 필요
+        return Objects.equals(password, input);
+    }
+
+    public void isValidParticipantCount(Integer participantCount) {
+        if(participantCount > this.getHeadCount()){
+            throw new InvalidCapacityException("참가 인원이 너무 많습니다.");
+        }
+        if(participantCount < this.getHeadCount()){
+            throw new InvalidCapacityException("참가 인원이 부족합니다.");
+        }
+    }
 }
