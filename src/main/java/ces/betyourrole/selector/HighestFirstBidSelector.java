@@ -4,6 +4,7 @@ import ces.betyourrole.domain.Betting;
 import ces.betyourrole.domain.MatchingType;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -45,7 +46,8 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
             if(!remainingMember.contains(bet.getParticipant().getId())) continue;
             if(!remainingTodo.contains(bet.getTodo().getId())) continue;
             point.put(bet.getTodo().getId(), point.getOrDefault(bet.getTodo().getId(), 0L) + bet.getPoint());
-            if(highestTodo.maxPoint < point.get(bet.getTodo().getId())){
+            //지연로딩이라 속도 많이 느릴지도
+            if(highestTodo.maxPoint < point.get(bet.getTodo().getId()) || (Objects.equals(highestTodo.maxPoint, point.get(bet.getTodo().getId())) && highestTodo.localDateTime.isBefore(bet.getParticipant().getUpdateDate()))){
                 highestTodo.maxPoint = point.get(bet.getTodo().getId());
                 highestTodo.highestId = bet.getTodo().getId();
             }
@@ -57,6 +59,8 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
     public static class HighestTodo {
         public Long maxPoint = -1L;
         public Long highestId = -1L;
+
+        public LocalDateTime localDateTime = LocalDateTime.now();
 
     }
 
