@@ -55,12 +55,10 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
         return highestBetting;
     }
 
-    public static class HighestBetting {
+    private static class HighestBetting {
         public Long maxPoint = -1L;
         public Long id = -1L;
-
         public LocalDateTime localDateTime = LocalDateTime.now();
-
     }
 
 }
