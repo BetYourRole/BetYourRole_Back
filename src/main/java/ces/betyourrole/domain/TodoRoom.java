@@ -50,6 +50,7 @@ public class TodoRoom {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Getter
     private MatchingState state; // 진행 여부
 
     @Column(nullable = false)
@@ -109,4 +110,5 @@ public class TodoRoom {
             throw new InvalidCapacityException("참가 인원이 부족합니다.");
         }
     }
+
 }

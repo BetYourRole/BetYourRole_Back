@@ -27,9 +27,11 @@ public class TodoRoomService {
 
     private final TodoRoomRepository todoRoomRepository;
     private final TodoRepository todoRepository;
-    private final ParticipantQueryService participantQueryService;
+
     private final SelectorFactory selectorFactory;
-    private final BettingRepository bettingRepository;
+
+    private final ParticipantQueryService participantQueryService;
+    private final TodoRoomQueryService todoRoomQueryService;
 
     @Transactional
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
@@ -51,23 +53,6 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todos,0);
     }
 
-    public TodoRoomResponse getRoomData(Long id){
-        TodoRoom room = findById(id);
-        return new TodoRoomResponse(room, findTodosByRoom(room), participantQueryService.countParticipantsByRoom(room));
-    }
-
-    public TodoRoom findById(Long id){
-        return todoRoomRepository.findById(id).orElseThrow(IdNotFoundException::new);
-    }
-
-    public List<Todo> findTodosByRoom(TodoRoom room){
-        return todoRepository.findByRoom(room);
-    }
-
-    public Todo getTodo(Long id){
-        return todoRepository.getReferenceById(id);
-    }
-
     @Transactional
     public TodoRoomResponse determineWinner(String token, DetermineWinnerRequest request){
         TodoRoom room = todoRoomRepository.findById(request.getId()).orElseThrow(IdNotFoundException::new);
@@ -78,13 +63,18 @@ public class TodoRoomService {
         room.isValidParticipantCount(participantsCount);
 
         DetermineWinnerAlgorithm selector = selectorFactory.getAlgorithm(room.getMatchingType());
-        Map<Long, Long> winners = selector.determineWinner(bettingRepository.findByTodo_room(room));
+        Map<Long, Long> winners = selector.determineWinner(todoRoomQueryService.findByTodoRoom(room));
 
-        List<Todo> todos = findTodosByRoom(room);
+        List<Todo> todos = todoRoomQueryService.findTodosByRoom(room);
         todos.forEach(todo -> todo.setWinner(participantQueryService.findById(winners.get(todo.getId()))));
 
         return new TodoRoomResponse(room, todos, participantsCount);
     }
 
+    @Transactional(readOnly = true)
+    public TodoRoomResponse getRoomData(Long id) {
+        TodoRoom room = todoRoomQueryService.findById(id);
+        return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.countParticipantsByRoom(room));
+    }
 
 }

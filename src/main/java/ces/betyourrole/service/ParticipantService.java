@@ -1,6 +1,7 @@
 package ces.betyourrole.service;
 
 import ces.betyourrole.domain.Betting;
+import ces.betyourrole.domain.MatchingState;
 import ces.betyourrole.domain.Participant;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.AddParticipantRequest;
@@ -8,6 +9,7 @@ import ces.betyourrole.dto.BettingRequest;
 import ces.betyourrole.dto.ParticipantResponse;
 import ces.betyourrole.exception.IdNotFoundException;
 import ces.betyourrole.exception.InvalidRangeException;
+import ces.betyourrole.exception.ParticipationNotAllowedException;
 import ces.betyourrole.repository.BettingRepository;
 import ces.betyourrole.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +21,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class ParticipantService {
 
-    private final TodoRoomService todoRoomService;
+    private final TodoRoomQueryService todoRoomQueryService;
     private final ParticipantRepository participantRepository;
     private final BettingRepository bettingRepository;
 
-    @Transactional
     public ParticipantResponse addParticipant(String token, AddParticipantRequest request){
 
         /**
@@ -35,7 +36,10 @@ public class ParticipantService {
          * bettings의 개수가 todo-room의 역할 개수와 일치하는지 검사
         */
 
-        TodoRoom room = todoRoomService.findById(request.getRoomId());
+        TodoRoom room = todoRoomQueryService.findById(request.getRoomId());
+        if(room.getState() != MatchingState.BEFORE){
+            throw new ParticipationNotAllowedException("참여가 불가능한 방입니다.");
+        }
 
         Participant p;
         //토큰 검증 로직 필요
@@ -46,7 +50,9 @@ public class ParticipantService {
             throw new InvalidRangeException("합계 포인트가 최대 포인트를 초과합니다.");
         }
 
-        List<Betting> bettings = request.getBettings().stream().map(dto -> dto.toEntity(todoRoomService.getTodo(dto.getTodoId()), p)).toList();
+
+
+        List<Betting> bettings = request.getBettings().stream().map(dto -> dto.toEntity(todoRoomQueryService.getTodo(dto.getTodoId()), p)).toList();
 
         try{
             bettingRepository.saveAll(bettings);
