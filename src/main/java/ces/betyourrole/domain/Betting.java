@@ -18,6 +18,7 @@ public class Betting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "betting_id")
+    @Getter
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,4 +41,5 @@ public class Betting {
         this.point = point;
         this.comment = comment;
     }
+
 }

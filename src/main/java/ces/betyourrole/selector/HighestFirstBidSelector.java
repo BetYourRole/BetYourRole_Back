@@ -12,7 +12,7 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
 
     @Override
     public MatchingType getMatchingType() {
-        return MatchingType.HIGHEST_FIRST_BID;
+        return MatchingType.HIGHEST_FIRST;
     }
 
     @Override
@@ -26,10 +26,9 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
 
         Map<Long, Long> winners = new HashMap<>();
         while(!remainingTodo.isEmpty()){
-            HighestTodo highestTodo = getHighestInRemainingTodo(remainingMember,remainingTodo,bettingList);
-            Betting win = bettingList.stream().filter(bet -> {
-                return Objects.equals(bet.getTodo().getId(), highestTodo.highestId) && remainingMember.contains(bet.getParticipant().getId());
-            }).max(Comparator.comparing(Betting::getPoint)).get();
+            HighestBetting highestBetting = getHighestInRemainingTodo(remainingMember,remainingTodo,bettingList);
+            Betting win = bettingList.stream()
+                    .filter(bet -> Objects.equals(bet.getId(), highestBetting.id)).findFirst().get();
             winners.put(win.getTodo().getId(), win.getParticipant().getId());
             remainingMember.remove(win.getParticipant().getId());
             remainingTodo.remove(win.getTodo().getId());
@@ -38,27 +37,27 @@ public class HighestFirstBidSelector implements DetermineWinnerAlgorithm{
         return winners;
     }
 
-    private HighestTodo getHighestInRemainingTodo(Set<Long> remainingMember, Set<Long> remainingTodo, List<Betting> bettingList){
+    private HighestBetting getHighestInRemainingTodo(Set<Long> remainingMember, Set<Long> remainingTodo, List<Betting> bettingList){
         Map<Long, Long> point = new HashMap<>();
-        HighestTodo highestTodo = new HighestTodo();
+        HighestBetting highestBetting = new HighestBetting();
 
         for(Betting bet : bettingList){
             if(!remainingMember.contains(bet.getParticipant().getId())) continue;
             if(!remainingTodo.contains(bet.getTodo().getId())) continue;
             point.put(bet.getTodo().getId(), point.getOrDefault(bet.getTodo().getId(), 0L) + bet.getPoint());
             //지연로딩이라 속도 많이 느릴지도
-            if(highestTodo.maxPoint < point.get(bet.getTodo().getId()) || (Objects.equals(highestTodo.maxPoint, point.get(bet.getTodo().getId())) && highestTodo.localDateTime.isBefore(bet.getParticipant().getUpdateDate()))){
-                highestTodo.maxPoint = point.get(bet.getTodo().getId());
-                highestTodo.highestId = bet.getTodo().getId();
+            if(highestBetting.maxPoint < point.get(bet.getTodo().getId()) || (Objects.equals(highestBetting.maxPoint, point.get(bet.getTodo().getId())) && highestBetting.localDateTime.isBefore(bet.getParticipant().getUpdateDate()))){
+                highestBetting.maxPoint = point.get(bet.getTodo().getId());
+                highestBetting.id = bet.getId();
             }
         }
 
-        return highestTodo;
+        return highestBetting;
     }
 
-    public static class HighestTodo {
+    public static class HighestBetting {
         public Long maxPoint = -1L;
-        public Long highestId = -1L;
+        public Long id = -1L;
 
         public LocalDateTime localDateTime = LocalDateTime.now();
 
