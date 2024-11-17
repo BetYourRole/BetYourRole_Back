@@ -29,7 +29,7 @@ public class ParticipantService {
 
         TodoRoom room = todoRoomQueryService.findById(request.getRoomId());
         if(room.getState() != MatchingState.BEFORE){
-            throw new ParticipationNotAllowedException("참여가 불가능한 방입니다.");
+            throw new CompletedTodoRoomException("참여가 불가능한 방입니다.");
         }
 
         isValidBettingList(room, request.getBettings());

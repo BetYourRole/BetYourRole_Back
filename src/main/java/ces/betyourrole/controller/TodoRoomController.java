@@ -34,6 +34,13 @@ public class TodoRoomController {
     public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @RequestBody DetermineWinnerRequest request){
         TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.ok(response);
     }
+
+//    @PutMapping("/{roomId}")
+//    public ResponseEntity<TodoRoomResponse> updateTodoRoom(@PathVariable("roomId") Long roomId){
+////        TodoRoomResponse response = todoRoomService.getRoomData(roomId);
+////
+////        return ResponseEntity.ok(response);
+//    }
 }

@@ -36,6 +36,9 @@ public class TodoRoomQueryService {
 
     public Todo getTodo(Long id) {
         return todoRepository.getReferenceById(id);
+    }
 
+    public Integer CountTodosByTodoRoom(TodoRoom room){
+        return todoRepository.countByRoom(room);
     }
 }

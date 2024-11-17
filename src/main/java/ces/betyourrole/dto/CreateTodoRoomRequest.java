@@ -17,8 +17,6 @@ public class CreateTodoRoomRequest {
 
     private String inscription;
 
-    private Integer headCount;
-
     private MatchingType matchingType;
 
     private Integer point;
@@ -30,10 +28,10 @@ public class CreateTodoRoomRequest {
     private List<TodoRequest> todos;
 
     public TodoRoom toEntity(Member member){
-        return new TodoRoom(member, this.name, this.inscription, this.headCount, this.matchingType, this.point, this.visibility);
+        return new TodoRoom(member, this.name, this.inscription, this.todos.size(),this.matchingType, this.point, this.visibility);
     }
 
     public TodoRoom toEntity(){
-        return new TodoRoom(this.password, this.name, this.inscription, this.headCount, this.matchingType, this.point, this.visibility);
+        return new TodoRoom(this.password, this.name, this.inscription, this.todos.size(), this.matchingType, this.point, this.visibility);
     }
 }

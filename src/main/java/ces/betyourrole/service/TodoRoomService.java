@@ -6,10 +6,7 @@ import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
 import ces.betyourrole.dto.DetermineWinnerRequest;
 import ces.betyourrole.dto.TodoRoomResponse;
-import ces.betyourrole.exception.CompletedTodoRoomException;
-import ces.betyourrole.exception.InvalidPasswordException;
-import ces.betyourrole.exception.InvalidRangeException;
-import ces.betyourrole.exception.IdNotFoundException;
+import ces.betyourrole.exception.*;
 import ces.betyourrole.repository.TodoRepository;
 import ces.betyourrole.repository.TodoRoomRepository;
 import ces.betyourrole.selector.DetermineWinnerAlgorithm;
@@ -20,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +34,6 @@ public class TodoRoomService {
 
     @Transactional
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
-        if(request.getTodos().size() != request.getHeadCount()){
-            throw new InvalidRangeException("인원 수와 역할의 수가 일치하지 않습니다.");
-        }
-
         TodoRoom room;
 //        if(token...) 토큰 확인 및 검증 로직 필요
         room = request.toEntity();
@@ -62,7 +56,9 @@ public class TodoRoomService {
         if(!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
 
         Integer participantsCount = participantQueryService.countParticipantsByRoom(room);
-        room.isValidParticipantCount(participantsCount);
+        if(!Objects.equals(participantsCount, todoRoomQueryService.CountTodosByTodoRoom(room))){
+            throw new InvalidCapacityException("역할의 수와 참가자의 수가 일치하지 않습니다.");
+        }
 
         DetermineWinnerAlgorithm selector = selectorFactory.getAlgorithm(room.getMatchingType());
         Map<Long, Long> winners = selector.determineWinner(todoRoomQueryService.findBettingsByTodoRoom(room));

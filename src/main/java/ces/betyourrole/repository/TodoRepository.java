@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findByRoom(TodoRoom room);
+    Integer countByRoom(TodoRoom room);
 }

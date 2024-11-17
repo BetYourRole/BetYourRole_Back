@@ -35,9 +35,6 @@ public class TodoRoom {
     @Column(name = "todo_room_inscription")
     private String inscription; // 방 설명
 
-    @Column(nullable = false)
-    private Integer headCount; // 인원수 (2 이상)
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MatchingType matchingType; // 낙찰 알고리즘
@@ -70,7 +67,6 @@ public class TodoRoom {
         if(headCount < 2 || headCount > maxHeadCount){
             throw new InvalidRangeException(MessageFormat.format("참여인원은 2인 이상 {0}인 이하만 가능합니다.", maxHeadCount));
         }
-        this.headCount = headCount;
         this.matchingType = matchingType;
 
         if(point<minPoint || point>maxPoint){
@@ -100,15 +96,6 @@ public class TodoRoom {
     public boolean isPasswordCorrect(String input){
         //암호화 로직 적용 필요
         return Objects.equals(password, input);
-    }
-
-    public void isValidParticipantCount(Integer participantCount) {
-        if(participantCount > this.getHeadCount()){
-            throw new InvalidCapacityException("참가 인원이 너무 많습니다.");
-        }
-        if(participantCount < this.getHeadCount()){
-            throw new InvalidCapacityException("참가 인원이 부족합니다.");
-        }
     }
 
     public void completeRoom(){

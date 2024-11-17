@@ -45,7 +45,7 @@ public class TodoRoomResponse {
         this.id = room.getId();
         this.name = room.getName();
         this.inscription = room.getInscription();
-        this.headCount = room.getHeadCount();;
+        this.headCount = todos.size();
         this.participantCount = participantCount;
         this.matchingType = room.getMatchingType();
         this.point = room.getPoint();
