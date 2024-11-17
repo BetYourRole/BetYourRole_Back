@@ -111,4 +111,8 @@ public class TodoRoom {
         }
     }
 
+    public void completeRoom(){
+        this.state = MatchingState.COMPLETED;
+    }
+
 }
