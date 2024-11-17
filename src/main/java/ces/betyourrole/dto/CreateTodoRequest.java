@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TodoRequest {
+public class CreateTodoRequest {
 
     private String name;
     private String inscription;

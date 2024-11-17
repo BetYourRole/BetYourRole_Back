@@ -25,7 +25,7 @@ public class CreateTodoRoomRequest {
 
     private String password;
 
-    private List<TodoRequest> todos;
+    private List<CreateTodoRequest> todos;
 
     public TodoRoom toEntity(Member member){
         return new TodoRoom(member, this.name, this.inscription, this.todos.size(),this.matchingType, this.point, this.visibility);

@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class TodoRoomService {
 
     private final TodoRoomRepository todoRoomRepository;
@@ -32,7 +32,6 @@ public class TodoRoomService {
     private final ParticipantQueryService participantQueryService;
     private final TodoRoomQueryService todoRoomQueryService;
 
-    @Transactional
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
         TodoRoom room;
 //        if(token...) 토큰 확인 및 검증 로직 필요
@@ -48,7 +47,6 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todos,0);
     }
 
-    @Transactional
     public TodoRoomResponse determineWinner(String token, DetermineWinnerRequest request){
         TodoRoom room = todoRoomRepository.findById(request.getId()).orElseThrow(IdNotFoundException::new);
         if(room.getState() != MatchingState.BEFORE) throw new CompletedTodoRoomException();

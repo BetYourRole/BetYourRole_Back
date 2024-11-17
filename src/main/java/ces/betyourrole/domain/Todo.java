@@ -46,4 +46,9 @@ public class Todo {
         this.createDate = LocalDateTime.now();
     }
 
+    public void updateTodo(String name, String inscription){
+        this.name = name;
+        this.inscription = inscription;
+    }
+
 }

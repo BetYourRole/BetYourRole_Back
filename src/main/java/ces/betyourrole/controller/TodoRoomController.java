@@ -37,10 +37,4 @@ public class TodoRoomController {
         return ResponseEntity.ok(response);
     }
 
-//    @PutMapping("/{roomId}")
-//    public ResponseEntity<TodoRoomResponse> updateTodoRoom(@PathVariable("roomId") Long roomId){
-////        TodoRoomResponse response = todoRoomService.getRoomData(roomId);
-////
-////        return ResponseEntity.ok(response);
-//    }
 }
