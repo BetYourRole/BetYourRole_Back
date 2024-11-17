@@ -8,7 +8,6 @@ import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.exception.InvalidPasswordException;
 import ces.betyourrole.exception.InvalidRangeException;
 import ces.betyourrole.exception.IdNotFoundException;
-import ces.betyourrole.repository.BettingRepository;
 import ces.betyourrole.repository.TodoRepository;
 import ces.betyourrole.repository.TodoRoomRepository;
 import ces.betyourrole.selector.DetermineWinnerAlgorithm;
@@ -63,7 +62,7 @@ public class TodoRoomService {
         room.isValidParticipantCount(participantsCount);
 
         DetermineWinnerAlgorithm selector = selectorFactory.getAlgorithm(room.getMatchingType());
-        Map<Long, Long> winners = selector.determineWinner(todoRoomQueryService.findByTodoRoom(room));
+        Map<Long, Long> winners = selector.determineWinner(todoRoomQueryService.findBettingsByTodoRoom(room));
 
         List<Todo> todos = todoRoomQueryService.findTodosByRoom(room);
         todos.forEach(todo -> todo.setWinner(participantQueryService.findById(winners.get(todo.getId()))));

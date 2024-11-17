@@ -3,7 +3,6 @@ package ces.betyourrole.service;
 import ces.betyourrole.domain.Betting;
 import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
-import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.exception.IdNotFoundException;
 import ces.betyourrole.repository.BettingRepository;
 import ces.betyourrole.repository.TodoRepository;
@@ -23,7 +22,7 @@ public class TodoRoomQueryService {
     private final TodoRepository todoRepository;
     private final BettingRepository bettingRepository;
 
-    public List<Betting> findByTodoRoom(TodoRoom room){
+    public List<Betting> findBettingsByTodoRoom(TodoRoom room){
         return bettingRepository.findByTodo_room(room);
     }
 
