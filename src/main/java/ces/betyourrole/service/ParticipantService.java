@@ -3,6 +3,7 @@ package ces.betyourrole.service;
 import ces.betyourrole.domain.*;
 import ces.betyourrole.dto.AddParticipantRequest;
 import ces.betyourrole.dto.BettingRequest;
+import ces.betyourrole.dto.OnlyPasswordRequest;
 import ces.betyourrole.dto.ParticipantResponse;
 import ces.betyourrole.exception.*;
 import ces.betyourrole.repository.BettingRepository;
@@ -23,6 +24,7 @@ public class ParticipantService {
 
     private final TodoRoomQueryService todoRoomQueryService;
     private final ParticipantRepository participantRepository;
+    private final ParticipantQueryService participantQueryService;
     private final BettingRepository bettingRepository;
 
     public ParticipantResponse addParticipant(String token, AddParticipantRequest request){
@@ -70,6 +72,15 @@ public class ParticipantService {
         if (!requestedTodoIds.equals(roomTodoIds)) {
             throw new InvalidBettingDataException("방 정보와 베팅 정보가 일치하지 않습니다.");
         }
+    }
+
+    public void deleteParticipant(String token, Long participantId, OnlyPasswordRequest request){
+        Participant p = participantQueryService.findById(participantId);
+        TodoRoom todoRoom = p.getRoom();
+        //토큰검증 else
+        if(!todoRoom.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
+
+        participantRepository.delete(p);
     }
 
 }

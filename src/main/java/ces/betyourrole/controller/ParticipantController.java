@@ -1,16 +1,14 @@
 package ces.betyourrole.controller;
 
 import ces.betyourrole.dto.AddParticipantRequest;
+import ces.betyourrole.dto.OnlyPasswordRequest;
 import ces.betyourrole.dto.ParticipantResponse;
 import ces.betyourrole.service.ParticipantService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,4 +22,11 @@ public class ParticipantController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @DeleteMapping("/{memberId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204 상태 코드
+    public void deleteResource(HttpServletRequest header, @PathVariable("memberId") Long memberId, @RequestBody OnlyPasswordRequest request) {
+        participantService.deleteParticipant(header.getHeader("Authorization"), memberId, request);
+    }
+
 }
