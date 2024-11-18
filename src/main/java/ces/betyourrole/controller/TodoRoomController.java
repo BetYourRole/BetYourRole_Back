@@ -1,7 +1,7 @@
 package ces.betyourrole.controller;
 
 import ces.betyourrole.dto.CreateTodoRoomRequest;
-import ces.betyourrole.dto.DetermineWinnerRequest;
+import ces.betyourrole.dto.OnlyPasswordRequest;
 import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.service.TodoRoomService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,9 +30,9 @@ public class TodoRoomController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/draw")
-    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @RequestBody DetermineWinnerRequest request){
-        TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request);
+    @PostMapping("/{roomId}/draw")
+    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @PathVariable("roomId") Long roomId, @RequestBody OnlyPasswordRequest request){
+        TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request, roomId);
 
         return ResponseEntity.ok(response);
     }

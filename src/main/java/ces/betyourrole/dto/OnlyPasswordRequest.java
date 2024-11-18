@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class DetermineWinnerRequest {
-
-    private Long id;
+public class OnlyPasswordRequest {
     private String password;
-
 }

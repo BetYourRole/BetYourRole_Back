@@ -5,7 +5,7 @@ import ces.betyourrole.domain.Participant;
 import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
-import ces.betyourrole.dto.DetermineWinnerRequest;
+import ces.betyourrole.dto.OnlyPasswordRequest;
 import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.exception.*;
 import ces.betyourrole.repository.TodoRepository;
@@ -49,8 +49,8 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todos,new ArrayList<>());
     }
 
-    public TodoRoomResponse determineWinner(String token, DetermineWinnerRequest request){
-        TodoRoom room = todoRoomRepository.findById(request.getId()).orElseThrow(IdNotFoundException::new);
+    public TodoRoomResponse determineWinner(String token, OnlyPasswordRequest request, Long roomId){
+        TodoRoom room = todoRoomRepository.findById(roomId).orElseThrow(IdNotFoundException::new);
         if(room.getState() != MatchingState.BEFORE) throw new CompletedTodoRoomException();
         //        if (token) ... 암튼 토큰 검증 로직 필요 else
         if(!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
