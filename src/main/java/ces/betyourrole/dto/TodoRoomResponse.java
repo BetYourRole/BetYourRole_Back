@@ -1,9 +1,6 @@
 package ces.betyourrole.dto;
 
-import ces.betyourrole.domain.MatchingState;
-import ces.betyourrole.domain.MatchingType;
-import ces.betyourrole.domain.Todo;
-import ces.betyourrole.domain.TodoRoom;
+import ces.betyourrole.domain.*;
 import ces.betyourrole.repository.TodoRoomRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,17 +37,19 @@ public class TodoRoomResponse {
 
     private List<TodoResponse> todos;
 
+    private List<ParticipantInfo> participants;
 
-    public TodoRoomResponse(TodoRoom room, List<Todo> todos, Integer participantCount){
+    public TodoRoomResponse(TodoRoom room, List<Todo> todos, List<Participant> participants){
         this.id = room.getId();
         this.name = room.getName();
         this.inscription = room.getInscription();
         this.headCount = todos.size();
-        this.participantCount = participantCount;
+        this.participantCount = participants.size();
         this.matchingType = room.getMatchingType();
         this.point = room.getPoint();
         this.state = room.getState();
         this.visibility = room.getVisibility();
         this.todos = todos.stream().map(TodoResponse::new).toList();
+        this.participants = participants.stream().map(ParticipantInfo::new).toList();
     }
 }

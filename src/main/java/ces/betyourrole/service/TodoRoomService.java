@@ -1,6 +1,7 @@
 package ces.betyourrole.service;
 
 import ces.betyourrole.domain.MatchingState;
+import ces.betyourrole.domain.Participant;
 import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +46,7 @@ public class TodoRoomService {
 
         todoRepository.saveAll(todos);
 
-        return new TodoRoomResponse(room, todos,0);
+        return new TodoRoomResponse(room, todos,new ArrayList<>());
     }
 
     public TodoRoomResponse determineWinner(String token, DetermineWinnerRequest request){
@@ -53,8 +55,8 @@ public class TodoRoomService {
         //        if (token) ... 암튼 토큰 검증 로직 필요 else
         if(!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
 
-        Integer participantsCount = participantQueryService.countParticipantsByRoom(room);
-        if(!Objects.equals(participantsCount, todoRoomQueryService.CountTodosByTodoRoom(room))){
+        List<Participant> participants = participantQueryService.findByRoom(room);
+        if(!Objects.equals(participants.size(), todoRoomQueryService.CountTodosByTodoRoom(room))){
             throw new InvalidCapacityException("역할의 수와 참가자의 수가 일치하지 않습니다.");
         }
 
@@ -65,13 +67,13 @@ public class TodoRoomService {
         todos.forEach(todo -> todo.setWinner(participantQueryService.findById(winners.get(todo.getId()))));
         room.completeRoom();
 
-        return new TodoRoomResponse(room, todos, participantsCount);
+        return new TodoRoomResponse(room, todos, participants);
     }
 
     @Transactional(readOnly = true)
     public TodoRoomResponse getRoomData(Long id) {
         TodoRoom room = todoRoomQueryService.findById(id);
-        return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.countParticipantsByRoom(room));
+        return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.findByRoom(room));
     }
 
 }

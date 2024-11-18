@@ -26,4 +26,8 @@ public class ParticipantQueryService {
         return participantRepository.findById(id).orElseThrow(() -> new IdNotFoundException("해당 참여자를 찾을 수 없습니다."));
     }
 
+    public List<Participant> findByRoom(TodoRoom room){
+        return participantRepository.findByRoom(room);
+    }
+
 }
