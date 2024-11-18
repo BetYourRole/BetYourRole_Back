@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class BettingRequest {
 
     private Long todoId;
-    private Long participantId;
     private Integer point;
     private String comment;
 
