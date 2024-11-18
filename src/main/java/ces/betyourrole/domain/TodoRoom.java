@@ -1,12 +1,10 @@
 package ces.betyourrole.domain;
 
-import ces.betyourrole.exception.InvalidCapacityException;
 import ces.betyourrole.exception.InvalidRangeException;
 import ces.betyourrole.exception.RequiredFieldMissingException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -32,8 +30,8 @@ public class TodoRoom {
     @Column(nullable = false, name = "todo_room_name")
     private String name; // 방 이름
 
-    @Column(name = "todo_room_inscription")
-    private String inscription; // 방 설명
+    @Column(name = "todo_room_description")
+    private String description; // 방 설명
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,13 +54,13 @@ public class TodoRoom {
     @Column
     private String password; // 비밀번호 (수정/참여자 삭제용)
 
-    private TodoRoom(String name, String inscription, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
+    private TodoRoom(String name, String description, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
 
         if(name == null || name.isEmpty()){
             throw new RequiredFieldMissingException("방 이름은 필수입력입니다.");
         }
         this.name = name;
-        this.inscription = inscription;
+        this.description = description;
 
         if(headCount < 2 || headCount > maxHeadCount){
             throw new InvalidRangeException(MessageFormat.format("참여인원은 2인 이상 {0}인 이하만 가능합니다.", maxHeadCount));
@@ -80,14 +78,14 @@ public class TodoRoom {
 
     }
 
-    public TodoRoom(Member activeSession, String name, String inscription, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
-        this(name,inscription,headCount,matchingType,point,visibility);
+    public TodoRoom(Member activeSession, String name, String description, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
+        this(name,description,headCount,matchingType,point,visibility);
 
         this.activeSession = activeSession;
     }
 
-    public TodoRoom(String password, String name, String inscription, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
-        this(name,inscription,headCount,matchingType,point,visibility);
+    public TodoRoom(String password, String name, String description, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
+        this(name,description,headCount,matchingType,point,visibility);
 
         //암호화로직 추가
         this.password = password;

@@ -11,5 +11,5 @@ public class UpdateTodoRequest {
     private Long id;
     private String password;
     private String name;
-    private String inscription;
+    private String description;
 }

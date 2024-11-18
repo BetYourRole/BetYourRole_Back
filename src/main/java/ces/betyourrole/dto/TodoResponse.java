@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 public class TodoResponse {
     private Long id;
     private String name;
-    private String inscription;
+    private String description;
     private String winner;
 
     public TodoResponse(Todo todo){
         this.id = todo.getId();
         this.name = todo.getName();
-        this.inscription = todo.getInscription();
+        this.description = todo.getDescription();
         if(todo.getWinner() != null) this.winner = todo.getWinner().getName();
     }
 }

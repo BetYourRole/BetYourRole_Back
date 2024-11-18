@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 public class CreateTodoRequest {
 
     private String name;
-    private String inscription;
+    private String description;
 
     public Todo toEntity(TodoRoom room){
-        return new Todo(room, this.name, this.inscription);
+        return new Todo(room, this.name, this.description);
     }
 
 

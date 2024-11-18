@@ -30,25 +30,25 @@ public class Todo {
     @Column(nullable = false, name = "todo_name")
     private String name;
 
-    @Column(name = "todo_inscription")
-    private String inscription;
+    @Column(name = "todo_description")
+    private String description;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
 
-    public Todo(TodoRoom room, String name, String inscription) {
+    public Todo(TodoRoom room, String name, String description) {
         this.room = room;
         if(name==null || name.isEmpty()){
             throw new RequiredFieldMissingException("역할의 이름은 필수 입력입니다.");
         }
         this.name = name;
-        this.inscription = inscription;
+        this.description = description;
         this.createDate = LocalDateTime.now();
     }
 
-    public void updateTodo(String name, String inscription){
+    public void updateTodo(String name, String description){
         this.name = name;
-        this.inscription = inscription;
+        this.description = description;
     }
 
 }

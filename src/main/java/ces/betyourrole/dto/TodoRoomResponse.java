@@ -1,12 +1,10 @@
 package ces.betyourrole.dto;
 
 import ces.betyourrole.domain.*;
-import ces.betyourrole.repository.TodoRoomRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,7 +19,7 @@ public class TodoRoomResponse {
 
     private String name;
 
-    private String inscription;
+    private String description;
 
     private Integer headCount;
 
@@ -42,7 +40,7 @@ public class TodoRoomResponse {
     public TodoRoomResponse(TodoRoom room, List<Todo> todos, List<Participant> participants){
         this.id = room.getId();
         this.name = room.getName();
-        this.inscription = room.getInscription();
+        this.description = room.getDescription();
         this.headCount = todos.size();
         this.participantCount = participants.size();
         this.matchingType = room.getMatchingType();
