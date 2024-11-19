@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,8 +23,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        // accessToken, refreshToken 발급
-        String email = authentication.getName();
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String email = (String) oAuth2User.getAttributes().get("email");
 
         String accessToken = jwtTokenProvider.createAccessToken(email);
         String refreshToken = jwtTokenProvider.createRefreshToken(email);

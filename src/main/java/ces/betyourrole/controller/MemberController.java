@@ -1,7 +1,6 @@
 package ces.betyourrole.controller;
 
 import ces.betyourrole.domain.Member;
-import ces.betyourrole.service.CustomOAuth2UserService;
 import ces.betyourrole.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

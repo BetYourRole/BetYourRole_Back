@@ -32,13 +32,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
                 .getUserInfoEndpoint().getUserNameAttributeName();
 
-        // 유저 정보 dto 생성
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
-
-        // 회원가입 및 로그인
         Member member = memberService.registerMember(oAuth2UserInfo.email(), oAuth2UserInfo.name());
 
-        // OAuth2User로 반환
         return new PrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
     }
 }

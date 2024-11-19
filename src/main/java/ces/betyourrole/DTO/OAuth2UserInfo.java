@@ -1,6 +1,5 @@
 package ces.betyourrole.DTO;
 
-import ces.betyourrole.domain.Member;
 import ces.betyourrole.exception.AuthException;
 import lombok.Builder;
 
@@ -14,7 +13,8 @@ public record OAuth2UserInfo (
         String email
 ) {
     public static OAuth2UserInfo of(String registrationId, Map<String, Object> attributes) {
-        return switch (registrationId) { // registration id별로 userInfo 생성
+        // registration id 별로 userInfo 생성 (카카오나 다른거도 추가 가능, 프사같은거도 가져올 수 있을 듯?)
+        return switch (registrationId) {
             case "google" -> ofGoogle(attributes);
             default -> throw new AuthException(ILLEGAL_REGISTRATION_ID);
         };
