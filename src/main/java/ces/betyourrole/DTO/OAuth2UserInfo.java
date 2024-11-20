@@ -1,4 +1,4 @@
-package ces.betyourrole.DTO;
+package ces.betyourrole.dto;
 
 import ces.betyourrole.exception.AuthException;
 import lombok.Builder;

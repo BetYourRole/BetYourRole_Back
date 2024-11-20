@@ -1,9 +1,8 @@
 package ces.betyourrole.service;
 
-import ces.betyourrole.DTO.OAuth2UserInfo;
+import ces.betyourrole.dto.OAuth2UserInfo;
 import ces.betyourrole.domain.Member;
 import ces.betyourrole.security.PrincipalDetails;
-//import ces.betyourrole.util.GoogleClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

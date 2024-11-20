@@ -1,15 +1,19 @@
 package ces.betyourrole.security;
 
+import ces.betyourrole.exception.CustomException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -20,7 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if (requestURI.startsWith("/")) {
+//        if (requestURI.startsWith("/")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
+        if(Objects.equals(request.getMethod(), "OPTIONS")){
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,6 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 새로 발급된 토큰으로 인증 객체 생성
                 String email = jwtTokenProvider.getEmailFromToken(newAccessToken);
                 SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(email));
+            } else {
+                throw new CustomException("님토큰죽음", HttpStatus.UNAUTHORIZED);
             }
         }
 

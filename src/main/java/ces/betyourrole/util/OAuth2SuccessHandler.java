@@ -30,7 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtTokenProvider.createRefreshToken(email);
 
         // Refresh Token을 HttpOnly 쿠키로 설정
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie refreshCookie = ResponseCookie.from("RefreshToken", refreshToken)
                 .httpOnly(true)
 //                .secure(true)
                 .path("/")

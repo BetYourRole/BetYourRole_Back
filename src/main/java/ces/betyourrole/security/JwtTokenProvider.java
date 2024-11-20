@@ -52,16 +52,24 @@ public class JwtTokenProvider {
     // JWT 토큰에서 이메일 가져오기
     public String getEmailFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
+    public String getEmailFromBearerToken(String bearerToken){
+        return getEmailFromToken(resolveToken(bearerToken));
+    }
+
+    public String getEmailFromBearerToken(HttpServletRequest request){
+        return getEmailFromToken(resolveToken(request));
+    }
+
     // access token 유효성 확인
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -84,6 +92,13 @@ public class JwtTokenProvider {
     // 토큰 파싱
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public String resolveToken(String bearerToken) {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }

@@ -26,6 +26,7 @@ import java.util.Objects;
 @Transactional
 public class TodoRoomService {
 
+    private final MemberService memberService;
     private final TodoRoomRepository todoRoomRepository;
     private final TodoRepository todoRepository;
 
@@ -36,8 +37,8 @@ public class TodoRoomService {
 
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
         TodoRoom room;
-//        if(token...) 토큰 확인 및 검증 로직 필요
-        room = request.toEntity();
+        if(!token.isEmpty()) room = request.toEntity(memberService.getMemberByToken(token));
+        else room = request.toEntity();
 
         todoRoomRepository.save(room);
 

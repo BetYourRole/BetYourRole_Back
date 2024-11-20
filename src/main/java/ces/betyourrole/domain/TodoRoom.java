@@ -100,4 +100,8 @@ public class TodoRoom {
         this.state = MatchingState.COMPLETED;
     }
 
+    public boolean checkSession(Member member){
+        return this.activeSession.equals(member);
+    }
+
 }

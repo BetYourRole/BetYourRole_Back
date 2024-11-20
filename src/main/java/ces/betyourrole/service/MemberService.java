@@ -3,6 +3,8 @@ package ces.betyourrole.service;
 import ces.betyourrole.domain.Member;
 import ces.betyourrole.domain.MemberState;
 import ces.betyourrole.repository.MemberRepository;
+import ces.betyourrole.security.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 사용자 등록(구글 로그인 시 자동 등록)
     @Transactional
@@ -31,6 +34,14 @@ public class MemberService {
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
+
+    public Member getMemberByToken(String token){
+        return getMemberByEmail(jwtTokenProvider.getEmailFromBearerToken(token));
+    }
+
+    public Member getMemberByToken(HttpServletRequest request){
+        return getMemberByEmail(jwtTokenProvider.getEmailFromBearerToken(request));
     }
 
     // 사용자 조회(닉네임)
