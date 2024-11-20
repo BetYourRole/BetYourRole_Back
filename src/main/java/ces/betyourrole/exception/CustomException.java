@@ -17,4 +17,16 @@ public class CustomException extends RuntimeException{
         return ResponseEntity.status(status).body(this.message);
     }
 
+    public CustomException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.status = errorCode.getHttpStatus();
+        this.message = errorCode.getMessage();
+    }
+
+    public CustomException(ErrorCode errorCode, String message) {
+        super(message);
+        this.status = errorCode.getHttpStatus();
+        this.message = message;
+    }
+
 }
