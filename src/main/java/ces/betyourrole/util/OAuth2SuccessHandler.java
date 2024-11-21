@@ -6,6 +6,7 @@ import ces.betyourrole.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
     private static final String URI = "http://localhost:3000";
