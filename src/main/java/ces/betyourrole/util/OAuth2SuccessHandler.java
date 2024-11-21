@@ -1,6 +1,8 @@
 package ces.betyourrole.util;
 
+import ces.betyourrole.domain.Member;
 import ces.betyourrole.security.JwtTokenProvider;
+import ces.betyourrole.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +22,7 @@ import java.io.IOException;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
     private static final String URI = "http://localhost:3000";
+    private final MemberService memberService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -29,18 +32,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtTokenProvider.createAccessToken(email);
         String refreshToken = jwtTokenProvider.createRefreshToken(email);
 
-        // Refresh Token을 HttpOnly 쿠키로 설정
+        Member member = memberService.getMemberByEmail(email);
+        member.updateLastLogin();
+
         ResponseCookie refreshCookie = ResponseCookie.from("RefreshToken", refreshToken)
                 .httpOnly(true)
-//                .secure(true)
                 .path("/")
                 .maxAge(jwtTokenProvider.getRefreshTokenValidity() / 1000)
                 .build();
 
-        // 쿠키를 응답 헤더에 추가
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        // 토큰 전달을 위한 redirect
         String redirectUrl = UriComponentsBuilder.fromUriString(URI)
                 .queryParam("accessToken", accessToken)
                 .build().toUriString();

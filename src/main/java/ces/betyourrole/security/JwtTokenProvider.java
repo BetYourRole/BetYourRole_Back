@@ -3,6 +3,7 @@ package ces.betyourrole.security;
 import ces.betyourrole.exception.CustomException;
 import ces.betyourrole.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -129,5 +130,18 @@ public class JwtTokenProvider {
 
     public long getRefreshTokenValidity() {
         return REFRESH_TOKEN_EXPIRE_TIME;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("RefreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }
