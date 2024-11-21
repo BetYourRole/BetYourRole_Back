@@ -23,7 +23,7 @@ public class JwtTokenProvider {
     private final RedisTemplate<String, String> redisTemplate;
 
     private String SECRET_KEY = "ThisIsMyVeryVeryVerySecretTestKeyasdfhqewulthaekjskfjhwajkfasbdkjbfsdamnfbwakhqrgfasdfsabdfkjhwhlasiuhdfihwlaiudhslufhkljahwliuahsldkjfhlwiuahesjdknvzxmncvkjahglifuhawfkljshlfkhwlifuhxcvnalsdufhliawusjdhvkjnldfhua";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L;
 
     public String createAccessToken(String email) {

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class LoginController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/reissue")
-    public void reissueToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<String> reissueToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = jwtTokenProvider.resolveRefreshToken(request);
 
         if (jwtTokenProvider.validateRefreshToken(token)) {
@@ -35,14 +36,8 @@ public class LoginController {
 
             response.addCookie(refreshTokenCookie);
 
-            String redirectUrl = UriComponentsBuilder.fromUriString("/reissue")
-                    .queryParam("accessToken", newAccessToken)
-                    .build()
-                    .toUriString();
-
-            response.sendRedirect(redirectUrl);
-        } else {
-            throw new CustomException("님 토큰죽음", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(newAccessToken, HttpStatus.OK);
         }
+        throw new CustomException("님 토큰죽음", HttpStatus.UNAUTHORIZED);
     }
 }
