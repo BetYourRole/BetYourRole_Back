@@ -2,6 +2,7 @@ package ces.betyourrole.security;
 
 import ces.betyourrole.service.CustomOAuth2UserService;
 import ces.betyourrole.util.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -25,6 +31,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
@@ -48,10 +55,19 @@ public class SecurityConfig {
                 )
 
                 // oauth2 설정
+//                .oauth2Login(oauth -> // OAuth2 로그인 기능에 대한 여러 설정의 진입점
+//                        // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정을 담당
+//                        oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
+//                                // 로그인 성공 시 핸들러
+//                                .successHandler(oAuth2SuccessHandler)
+//                )
                 .oauth2Login(oauth -> // OAuth2 로그인 기능에 대한 여러 설정의 진입점
-                        // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정을 담당
-                        oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
-                                // 로그인 성공 시 핸들러
+                        oauth.authorizationEndpoint(authorizationEndpoint ->
+                                        authorizationEndpoint.authorizationRequestResolver(
+                                                customAuthorizationRequestResolver(clientRegistrationRepository)
+                                        )
+                                )
+                                .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler)
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
@@ -67,6 +83,35 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    private OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
+        DefaultOAuth2AuthorizationRequestResolver defaultResolver =
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+
+        return new OAuth2AuthorizationRequestResolver() {
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
+                OAuth2AuthorizationRequest authorizationRequest = defaultResolver.resolve(request);
+                return customizeAuthorizationRequest(authorizationRequest);
+            }
+
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
+                OAuth2AuthorizationRequest authorizationRequest = defaultResolver.resolve(request, clientRegistrationId);
+                return customizeAuthorizationRequest(authorizationRequest);
+            }
+
+            private OAuth2AuthorizationRequest customizeAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
+                if (authorizationRequest == null) {
+                    return null;
+                }
+                // `prompt=select_account` 파라미터 추가
+                return OAuth2AuthorizationRequest.from(authorizationRequest)
+                        .additionalParameters(params -> params.put("prompt", "select_account"))
+                        .build();
+            }
+        };
     }
 }
 
