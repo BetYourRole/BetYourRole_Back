@@ -28,9 +28,9 @@ public class ParticipantService {
     private final BettingRepository bettingRepository;
     private final MemberService memberService;
 
-    public ParticipantResponse addParticipant(String token, AddParticipantRequest request){
+    public ParticipantResponse addParticipant(String token, String roomURL, AddParticipantRequest request){
 
-        TodoRoom room = todoRoomQueryService.findById(request.getRoomId());
+        TodoRoom room = todoRoomQueryService.findByRandomURL(roomURL);
         if(room.getState() != MatchingState.BEFORE){
             throw new CompletedTodoRoomException("참여가 불가능한 방입니다.");
         }
@@ -38,7 +38,7 @@ public class ParticipantService {
         isValidBettingList(room, request.getBettings());
 
         Participant p;
-        if(!token.isEmpty()) p = request.toEntity(room, memberService.getMemberByToken(token));
+        if(token != null && !token.isEmpty()) p = request.toEntity(room, memberService.getMemberByToken(token));
         else p = request.toEntity(room);
 
         if(request.getBettings().stream().mapToInt(BettingRequest::getPoint).sum() > room.getPoint()){

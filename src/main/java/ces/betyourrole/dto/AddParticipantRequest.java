@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 public class AddParticipantRequest {
 
-    private Long roomId;
     private String name;
     private String password;
     private List<BettingRequest> bettings;

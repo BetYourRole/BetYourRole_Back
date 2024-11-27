@@ -37,7 +37,8 @@ public class TodoRoomService {
 
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
         TodoRoom room;
-        if(!token.isEmpty()) room = request.toEntity(memberService.getMemberByToken(token));
+        System.out.println(token);
+        if(token != null && !token.isEmpty()) room = request.toEntity(memberService.getMemberByToken(token));
         else room = request.toEntity();
 
         todoRoomRepository.save(room);
@@ -50,8 +51,8 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todos,new ArrayList<>());
     }
 
-    public TodoRoomResponse determineWinner(String token, OnlyPasswordRequest request, Long roomId){
-        TodoRoom room = todoRoomRepository.findById(roomId).orElseThrow(IdNotFoundException::new);
+    public TodoRoomResponse determineWinner(String token, OnlyPasswordRequest request, String roomURL){
+        TodoRoom room = todoRoomQueryService.findByRandomURL(roomURL);
         if(room.getState() != MatchingState.BEFORE) throw new CompletedTodoRoomException();
 
         if(!memberService.isAccessible(token, room.getActiveSession())) {
@@ -73,9 +74,11 @@ public class TodoRoomService {
     }
 
     @Transactional(readOnly = true)
-    public TodoRoomResponse getRoomData(Long id) {
-        TodoRoom room = todoRoomQueryService.findById(id);
+    public TodoRoomResponse getRoomData(String url) {
+        TodoRoom room = todoRoomQueryService.findByRandomURL(url);
         return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.findByRoom(room));
     }
+
+
 
 }

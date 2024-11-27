@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 public class TodoRoomResponse {
 
-    private Long id;
+    private String url;
 
 //    private String roomOwner;
 
@@ -38,7 +38,7 @@ public class TodoRoomResponse {
     private List<ParticipantInfo> participants;
 
     public TodoRoomResponse(TodoRoom room, List<Todo> todos, List<Participant> participants){
-        this.id = room.getId();
+        this.url = room.getRandomKey();
         this.name = room.getName();
         this.description = room.getDescription();
         this.headCount = todos.size();

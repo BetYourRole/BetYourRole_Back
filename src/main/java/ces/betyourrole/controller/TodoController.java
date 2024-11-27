@@ -15,8 +15,8 @@ public class TodoController {
     private final TodoService todoService;
 
     @PutMapping("/{todoId}")
-    public ResponseEntity<TodoResponse> getTodoRoom(HttpServletRequest header, @RequestBody UpdateTodoRequest request, @PathVariable("todoId") Long roomId){
-        TodoResponse response = todoService.updateTodo(header.getHeader("Authorization"), request, roomId);
+    public ResponseEntity<TodoResponse> getTodoRoom(HttpServletRequest header, @RequestBody UpdateTodoRequest request, @PathVariable("todoId") Long todoId){
+        TodoResponse response = todoService.updateTodo(header.getHeader("Authorization"), request, todoId);
 
         return ResponseEntity.ok(response);
     }
