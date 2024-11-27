@@ -53,9 +53,10 @@ public class TodoRoomService {
     public TodoRoomResponse determineWinner(String token, OnlyPasswordRequest request, Long roomId){
         TodoRoom room = todoRoomRepository.findById(roomId).orElseThrow(IdNotFoundException::new);
         if(room.getState() != MatchingState.BEFORE) throw new CompletedTodoRoomException();
-        //        if (token) ... 암튼 토큰 검증 로직 필요 else
-        if(!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
 
+        if(!memberService.isAccessible(token, room.getActiveSession())) {
+            if (room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
+        }
         List<Participant> participants = participantQueryService.findByRoom(room);
         if(!Objects.equals(participants.size(), todoRoomQueryService.CountTodosByTodoRoom(room))){
             throw new InvalidCapacityException("역할의 수와 참가자의 수가 일치하지 않습니다.");

@@ -18,7 +18,7 @@ public class AddParticipantRequest {
     private String password;
     private List<BettingRequest> bettings;
 
-    public Participant toEntity(Member member, TodoRoom todoRoom){
+    public Participant toEntity(TodoRoom todoRoom, Member member){
         return new Participant(member, todoRoom, this.name);
     }
 

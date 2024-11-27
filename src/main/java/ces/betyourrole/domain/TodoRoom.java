@@ -101,6 +101,7 @@ public class TodoRoom {
     }
 
     public boolean checkSession(Member member){
+        if(this.activeSession == null) return false;
         return this.activeSession.equals(member);
     }
 
