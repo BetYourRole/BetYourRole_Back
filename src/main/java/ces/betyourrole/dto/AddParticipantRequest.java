@@ -13,12 +13,11 @@ import java.util.List;
 @Getter
 public class AddParticipantRequest {
 
-    private Long roomId;
     private String name;
     private String password;
     private List<BettingRequest> bettings;
 
-    public Participant toEntity(Member member, TodoRoom todoRoom){
+    public Participant toEntity(TodoRoom todoRoom, Member member){
         return new Participant(member, todoRoom, this.name);
     }
 

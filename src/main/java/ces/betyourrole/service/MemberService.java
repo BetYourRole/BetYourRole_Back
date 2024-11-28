@@ -2,6 +2,7 @@ package ces.betyourrole.service;
 
 import ces.betyourrole.domain.Member;
 import ces.betyourrole.domain.MemberState;
+import ces.betyourrole.exception.AccessDeniedException;
 import ces.betyourrole.repository.MemberRepository;
 import ces.betyourrole.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,5 +66,12 @@ public class MemberService {
         Member member = getMemberById(id);
         member.deactivate();
         memberRepository.save(member);
+    }
+
+    public boolean isAccessible(String token, Member member){
+        if(member == null) return false;
+        if(token == null) throw new AccessDeniedException("사용자 로그인이 필요합니다.");
+        if(getMemberByToken(token).equals(member)) return true;
+        throw new AccessDeniedException("권한이 없는 사용자입니다.");
     }
 }

@@ -2,6 +2,7 @@ package ces.betyourrole.domain;
 
 import ces.betyourrole.exception.InvalidRangeException;
 import ces.betyourrole.exception.RequiredFieldMissingException;
+import ces.betyourrole.util.RandomKeyGenerator;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class TodoRoom {
     private static final int minPoint = 10;
     private static final int maxPoint = 1000;
 
-    @Id @GeneratedValue @Column(name = "todo_room_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "todo_room_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +54,14 @@ public class TodoRoom {
 
     @Column
     private String password; // 비밀번호 (수정/참여자 삭제용)
+
+    @Column(unique = true, nullable = false)
+    private String randomKey;
+
+    @PrePersist
+    public void generateRandomKey() {
+        this.randomKey = RandomKeyGenerator.generateRandomKey();
+    }
 
     private TodoRoom(String name, String description, Integer headCount, MatchingType matchingType, Integer point, Boolean visibility) {
 
@@ -101,6 +110,7 @@ public class TodoRoom {
     }
 
     public boolean checkSession(Member member){
+        if(this.activeSession == null) return false;
         return this.activeSession.equals(member);
     }
 

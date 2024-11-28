@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.*;
 public class ParticipantController {
     private final ParticipantService participantService;
 
-    @PostMapping("")
-    public ResponseEntity<ParticipantResponse> addParticipant(HttpServletRequest header, @RequestBody AddParticipantRequest request){
-        ParticipantResponse response = participantService.addParticipant(header.getHeader("Authorization"), request);
+    @PostMapping("/{todoRoomId}")
+    public ResponseEntity<ParticipantResponse> addParticipant(HttpServletRequest header, @PathVariable("todoRoomId") String roomURL, @RequestBody AddParticipantRequest request){
+        ParticipantResponse response = participantService.addParticipant(header.getHeader("Authorization"), roomURL, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{memberId}")
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204 상태 코드
-    public void deleteResource(HttpServletRequest header, @PathVariable("memberId") Long memberId, @RequestBody OnlyPasswordRequest request) {
-        participantService.deleteParticipant(header.getHeader("Authorization"), memberId, request);
+    public void deleteResource(HttpServletRequest header, @PathVariable("memberId") Long participantId, @RequestBody OnlyPasswordRequest request) {
+        participantService.deleteParticipant(header.getHeader("Authorization"), participantId, request);
     }
 
 }

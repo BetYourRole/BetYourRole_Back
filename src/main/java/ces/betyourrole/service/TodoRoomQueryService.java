@@ -4,6 +4,7 @@ import ces.betyourrole.domain.Betting;
 import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.exception.IdNotFoundException;
+import ces.betyourrole.exception.URLNotFoundException;
 import ces.betyourrole.repository.BettingRepository;
 import ces.betyourrole.repository.TodoRepository;
 import ces.betyourrole.repository.TodoRoomRepository;
@@ -40,5 +41,9 @@ public class TodoRoomQueryService {
 
     public Integer CountTodosByTodoRoom(TodoRoom room){
         return todoRepository.countByRoom(room);
+    }
+
+    public TodoRoom findByRandomURL(String url){
+        return todoRoomRepository.findByRandomKey(url).orElseThrow(URLNotFoundException::new);
     }
 }

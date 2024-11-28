@@ -26,10 +26,11 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final ParticipantQueryService participantQueryService;
     private final BettingRepository bettingRepository;
+    private final MemberService memberService;
 
-    public ParticipantResponse addParticipant(String token, AddParticipantRequest request){
+    public ParticipantResponse addParticipant(String token, String roomURL, AddParticipantRequest request){
 
-        TodoRoom room = todoRoomQueryService.findById(request.getRoomId());
+        TodoRoom room = todoRoomQueryService.findByRandomURL(roomURL);
         if(room.getState() != MatchingState.BEFORE){
             throw new CompletedTodoRoomException("참여가 불가능한 방입니다.");
         }
@@ -37,8 +38,8 @@ public class ParticipantService {
         isValidBettingList(room, request.getBettings());
 
         Participant p;
-        //토큰 검증 로직 필요
-        p = request.toEntity(room);
+        if(token != null && !token.isEmpty()) p = request.toEntity(room, memberService.getMemberByToken(token));
+        else p = request.toEntity(room);
 
         if(request.getBettings().stream().mapToInt(BettingRequest::getPoint).sum() > room.getPoint()){
             throw new InvalidRangeException("합계 포인트가 최대 포인트를 초과합니다.");
@@ -76,10 +77,10 @@ public class ParticipantService {
 
     public void deleteParticipant(String token, Long participantId, OnlyPasswordRequest request){
         Participant p = participantQueryService.findById(participantId);
-        TodoRoom todoRoom = p.getRoom();
-        //토큰검증 else
-        if(!todoRoom.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
-
+        TodoRoom room = p.getRoom();
+        if(!memberService.isAccessible(token, room.getActiveSession())) {
+            if (!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
+        }
         participantRepository.delete(p);
     }
 

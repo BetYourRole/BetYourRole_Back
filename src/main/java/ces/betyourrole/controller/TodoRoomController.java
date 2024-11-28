@@ -24,15 +24,15 @@ public class TodoRoomController {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<TodoRoomResponse> getTodoRoom(@PathVariable("roomId") Long roomId){
-        TodoRoomResponse response = todoRoomService.getRoomData(roomId);
+    public ResponseEntity<TodoRoomResponse> getTodoRoom(@PathVariable("roomId") String key){
+        TodoRoomResponse response = todoRoomService.getRoomData(key);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{roomId}/draw")
-    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @PathVariable("roomId") Long roomId, @RequestBody OnlyPasswordRequest request){
-        TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request, roomId);
+    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @PathVariable("roomId") String key, @RequestBody OnlyPasswordRequest request){
+        TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request, key);
 
         return ResponseEntity.ok(response);
     }
