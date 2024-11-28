@@ -13,7 +13,7 @@ public class TodoRoomResponse {
 
     private String url;
 
-//    private String roomOwner;
+    private String roomOwner;
 
 //    private LocalDateTime createDate;
 
@@ -38,6 +38,7 @@ public class TodoRoomResponse {
     private List<ParticipantInfo> participants;
 
     public TodoRoomResponse(TodoRoom room, List<Todo> todos, List<Participant> participants){
+        this.roomOwner = room.getRoomOwnerEmail();
         this.url = room.getRandomKey();
         this.name = room.getName();
         this.description = room.getDescription();

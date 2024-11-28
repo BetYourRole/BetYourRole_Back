@@ -6,6 +6,7 @@ import ces.betyourrole.domain.Todo;
 import ces.betyourrole.domain.TodoRoom;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
 import ces.betyourrole.dto.OnlyPasswordRequest;
+import ces.betyourrole.dto.CheckPermissionResponse;
 import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.exception.*;
 import ces.betyourrole.repository.TodoRepository;
@@ -37,7 +38,6 @@ public class TodoRoomService {
 
     public TodoRoomResponse createTodoRoom(String token, CreateTodoRoomRequest request){
         TodoRoom room;
-        System.out.println(token);
         if(token != null && !token.isEmpty()) room = request.toEntity(memberService.getMemberByToken(token));
         else room = request.toEntity();
 
@@ -56,7 +56,7 @@ public class TodoRoomService {
         if(room.getState() != MatchingState.BEFORE) throw new CompletedTodoRoomException();
 
         if(!memberService.isAccessible(token, room.getActiveSession())) {
-            if (room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
+            if (!room.isPasswordCorrect(request.getPassword())) throw new InvalidPasswordException();
         }
         List<Participant> participants = participantQueryService.findByRoom(room);
         if(!Objects.equals(participants.size(), todoRoomQueryService.CountTodosByTodoRoom(room))){
@@ -79,6 +79,14 @@ public class TodoRoomService {
         return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.findByRoom(room));
     }
 
+    @Transactional(readOnly = true)
+    public CheckPermissionResponse checkPermission(String token, OnlyPasswordRequest request, String roomURL){
+        TodoRoom room = todoRoomQueryService.findByRandomURL(roomURL);
+        if(!memberService.isAccessible(token, room.getActiveSession())) {
+            if (!room.isPasswordCorrect(request.getPassword())) return new CheckPermissionResponse(false);
+        }
+        return new CheckPermissionResponse(true);
+    }
 
 
 }

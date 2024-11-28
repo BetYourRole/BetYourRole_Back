@@ -114,4 +114,10 @@ public class TodoRoom {
         return this.activeSession.equals(member);
     }
 
+    public String getRoomOwnerEmail() {
+        if(this.activeSession == null){
+            return "비회원";
+        }
+        return this.activeSession.getEmail();
+    }
 }
