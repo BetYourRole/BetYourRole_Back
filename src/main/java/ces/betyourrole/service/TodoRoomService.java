@@ -1,9 +1,6 @@
 package ces.betyourrole.service;
 
-import ces.betyourrole.domain.MatchingState;
-import ces.betyourrole.domain.Participant;
-import ces.betyourrole.domain.Todo;
-import ces.betyourrole.domain.TodoRoom;
+import ces.betyourrole.domain.*;
 import ces.betyourrole.dto.CreateTodoRoomRequest;
 import ces.betyourrole.dto.OnlyPasswordRequest;
 import ces.betyourrole.dto.CheckPermissionResponse;
@@ -48,7 +45,7 @@ public class TodoRoomService {
 
         todoRepository.saveAll(todos);
 
-        return new TodoRoomResponse(room, todos,new ArrayList<>());
+        return new TodoRoomResponse(room, todos);
     }
 
     public TodoRoomResponse determineWinner(String token, OnlyPasswordRequest request, String roomURL){
@@ -64,19 +61,20 @@ public class TodoRoomService {
         }
 
         DetermineWinnerAlgorithm selector = selectorFactory.getAlgorithm(room.getMatchingType());
-        Map<Long, Long> winners = selector.determineWinner(todoRoomQueryService.findBettingsByTodoRoom(room));
+        List<Betting> bettings = todoRoomQueryService.findBettingsByTodoRoom(room);
+        Map<Long, Long> winners = selector.determineWinner(bettings);
 
         List<Todo> todos = todoRoomQueryService.findTodosByRoom(room);
         todos.forEach(todo -> todo.setWinner(participantQueryService.findById(winners.get(todo.getId()))));
         room.completeRoom();
 
-        return new TodoRoomResponse(room, todos, participants);
+        return new TodoRoomResponse(room, todos, participants, bettings);
     }
 
     @Transactional(readOnly = true)
     public TodoRoomResponse getRoomData(String url) {
         TodoRoom room = todoRoomQueryService.findByRandomURL(url);
-        return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.findByRoom(room));
+        return new TodoRoomResponse(room, todoRoomQueryService.findTodosByRoom(room), participantQueryService.findByRoom(room), todoRoomQueryService.findBettingsByTodoRoom(room));
     }
 
     @Transactional(readOnly = true)
