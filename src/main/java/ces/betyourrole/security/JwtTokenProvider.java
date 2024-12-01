@@ -26,19 +26,21 @@ public class JwtTokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L;
 
-    public String createAccessToken(String email) {
-        return createToken(email, ACCESS_TOKEN_EXPIRE_TIME);
+    public String createAccessToken(String email, String name) {
+        return createToken(email, name, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    public String createRefreshToken(String email) {
-        String refreshToken = createToken(email, REFRESH_TOKEN_EXPIRE_TIME);
+    public String createRefreshToken(String email, String name) {
+        String refreshToken = createToken(email, name, REFRESH_TOKEN_EXPIRE_TIME);
         redisTemplate.opsForValue().set("refreshToken:" + email, refreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
         return refreshToken;
     }
 
     // JWT 생성
-    public String createToken(String email, long expireTime) {
+    public String createToken(String email, String name, long expireTime) {
         Claims claims = Jwts.claims().setSubject(email);
+        claims.put("name", name);
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + expireTime);
 
@@ -57,6 +59,15 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // 이름 가져오기
+    public String getNameFromToken(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(token)
+                .getBody()
+                .get("name");
     }
 
     public String getEmailFromBearerToken(String bearerToken){
@@ -113,8 +124,9 @@ public class JwtTokenProvider {
         }
 
         String email = getEmailFromToken(refreshToken);
+        String name = getNameFromToken(refreshToken);
 
-        return createAccessToken(email);
+        return createAccessToken(email, name);
     }
 
     // access token 재발급
@@ -124,8 +136,9 @@ public class JwtTokenProvider {
         }
 
         String email = getEmailFromToken(refreshToken);
+        String name = getNameFromToken(refreshToken);
 
-        return createRefreshToken(email);
+        return createRefreshToken(email, name);
     }
 
     public long getRefreshTokenValidity() {
