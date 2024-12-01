@@ -2,6 +2,7 @@ package ces.betyourrole.controller;
 
 import ces.betyourrole.dto.CreateTodoRoomRequest;
 import ces.betyourrole.dto.OnlyPasswordRequest;
+import ces.betyourrole.dto.CheckPermissionResponse;
 import ces.betyourrole.dto.TodoRoomResponse;
 import ces.betyourrole.service.TodoRoomService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,17 +24,23 @@ public class TodoRoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{roomId}")
-    public ResponseEntity<TodoRoomResponse> getTodoRoom(@PathVariable("roomId") String key){
+    @GetMapping("/{key}")
+    public ResponseEntity<TodoRoomResponse> getTodoRoom(@PathVariable("key") String key){
         TodoRoomResponse response = todoRoomService.getRoomData(key);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{roomId}/draw")
-    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @PathVariable("roomId") String key, @RequestBody OnlyPasswordRequest request){
+    @PostMapping("/{key}/draw")
+    public ResponseEntity<TodoRoomResponse> drawTodoRoom(HttpServletRequest header, @PathVariable("key") String key, @RequestBody OnlyPasswordRequest request){
         TodoRoomResponse response = todoRoomService.determineWinner(header.getHeader("Authorization"), request, key);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{key}/check-permission")
+    public ResponseEntity<CheckPermissionResponse> checkPermission(HttpServletRequest header, @PathVariable("key") String key, @RequestBody OnlyPasswordRequest request){
+        CheckPermissionResponse response = todoRoomService.checkPermission(header.getHeader("Authorization"), request, key);
         return ResponseEntity.ok(response);
     }
 
