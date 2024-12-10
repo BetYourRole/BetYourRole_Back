@@ -23,9 +23,10 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
         tr.description,
         tr.randomKey,
         tr.state,
-        COUNT(p.id))
+        COUNT(distinct p2.id))
     FROM Participant p
     JOIN p.room tr
+    JOIN Participant p2 ON tr = p2.room
     WHERE p.activeSession.id = :memberId
     GROUP BY tr.id, tr.name, tr.description, tr.randomKey, tr.state
     """)
